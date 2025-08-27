@@ -1,0 +1,132 @@
+
+==========>(PostgreSQL Query)<==========
+
+Insert Into : 
+                  INSERT INTO students (name,id) VALUES ('ayaz',123)
+
+Select Data : 
+                  SELECT * FROM students
+                  SELECT name,id FROM students
+
+PostgreSQL ADD COLUMN : 
+                  ALTER TABLE students ADD color VARCHAR(255);
+
+PostgreSQL DROP COLUMN : 
+                  ALTER TABLE students DROP COLUMN color;
+
+PostgreSQL UPDATE : 
+                  UPDATE students SET name=$1 WHERE id=$2
+                  
+PostgreSQL DELETE : 
+                  DELETE FROM students WHERE id=$2
+
+PostgreSQL DROP TABLE : 
+                   DROP TABLE cars;
+
+
+
+=====================>(Data Types)<================
+
+
+   an attributes that specifies the type of the data in the column 
+   of our database-TABLE
+
+
+MOST WIDELY USED : 
+                 
+                  Numeric - Int double float decimal
+                  String  - VARCHAR
+                  Date    - DATE
+                  Boolean - BOOLEAN 
+                  
+=====================>(CONSTRAINTS)<===================
+
+             A contraint in PostgreSQL is the rule apply on column
+
+
+1. Primary Key : 
+
+                uniquely identifies each record in TABLE
+                must contain Unique value and cannot NULL VALUES
+                a table can only have 1 primary key
+                
+2. NOT NULL : 
+                NULL value allowed nahi he
+                
+3. DEFAULT : 
+                if value not available then set default value
+                
+=================>(Logical Operator)<===================
+                AND & OR Operator
+                
+=================>(Retational Operator)<===================
+                <=
+                >= 
+                = 
+                !=
+
+
+
+   SELECT * FROM employee WHERE dept = 'IT' OR dept = 'Finance' OR ....
+
+   For clearing this we use IN , NOT IN
+                
+
+==============>(Mathematical)<===============
+
+1. COUNT
+2. SUM
+3. AVG
+4. MIN
+5. MAX
+SELECT avg(salary) from employees
+
+==============>(GROUP BY)<===============
+
+  SELECT dept,count(emp_id) from employees group by dept
+
+==============<(Relationship)>============
+
+   ::: table linked is called relationship
+1. One to One
+2. One to Many
+1. Many to Many
+
+
+               
+==============<(Foreign Key)>============
+
+1 table ka data dusra table me ho to us to foreign key kehty hein
+
+
+====================<(Joins)>===================
+
+JOIN operation is used to combined two or more rows in table based on the related column between them. 
+
+TYPES OF Joins
+
+-> CROSS JOIN
+-> INNER JOIN
+-> RIGHT JOIN
+-> LEFT JOIN
+
+===================<(CROSS JOIN)>===============
+
+every row from one table is combined with every row from another table
+shows every combinations
+ 
+select * from customers cross join orders
+
+ 
+===================<(INNER JOIN)>===============
+
+return those row when there is matched between specified columns in left and right table 
+
+select * from customers c inner join orders o on c.cust_id = o.cust_id
+
+
+===================<(LEFT JOIN)>===============
+
+return those row when there is matched between specified columns and all left table data
+
+select * from customers c inner join orders o on c.cust_id = o.cust_id
