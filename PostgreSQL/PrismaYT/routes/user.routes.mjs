@@ -7,6 +7,6 @@ let router = express.Router()
 
 router.post('/',createUser)
 router.post('/update',updateUser)
-router.post('/read',readData)
+router.get('/read',readData)
 
 export default router

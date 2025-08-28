@@ -45,7 +45,16 @@ export const updateUser = async (req,res) => {
 }
 
 export const readData = async (req,res) => {
-  const updatedUser = await prisma.user.findMany()
+  const updatedUser = await prisma.user.findMany({
+    include : {
+      post : {
+        select : {
+          title : true,
+          comment_count : true
+        }
+      }
+    }
+  })
   return res.json({
     success : true,
     message : "User Created Successfully",
