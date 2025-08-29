@@ -15,25 +15,25 @@ export  const fetchData = async (req:Request,res:Response) => {
   }
 }
 
-export const createUser = async (req:Request,res:Response) => {
-  try {
-    const {name,email,password} = req.body;
-    let users = await prisma.user.create({
-      data : {
-        name,
-        email,
-        password
-      }
-    })
-    res.status(200).json({
-      success : true,
-      message : "User created successfully!",
-      data : users
-    })
-  } catch (error : any) {
-    res.status(500).send(error.message)
-  }
-}
+// export const createUser = async (req:Request,res:Response) => {
+//   try {
+//     const {name,email,password} = req.body;
+//     let users : any = await prisma.user.create({
+//       data : {
+//         name,
+//         email,
+//         password,
+//       }
+//     })
+//     res.status(200).json({
+//       success : true,
+//       message : "User created successfully!",
+//       data : users
+//     })
+//   } catch (error : any) {
+//     res.status(500).send(error.message)
+//   }
+// }
 export const deleteUser = async (req:Request,res:Response) => {
   try {
     let userId = req.params.id as string
