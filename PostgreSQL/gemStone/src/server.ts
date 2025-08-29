@@ -6,7 +6,7 @@ app.use(express.json())
 
 
 app.get('/',(req:Request,res:Response) => {
-  res.send("Home Page")
+  res.send("Home Page");
 })
 
 app.listen(3000,() => {
