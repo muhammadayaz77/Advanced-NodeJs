@@ -1,0 +1,12 @@
+{
+  "name": "auth",
+  "version": "1.0.0",
+  "description": "this is the authentication system using nodejs",
+  "license": "ISC",
+  "author": "ayaz",
+  "type": "commonjs",
+  "main": "index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
