@@ -1,13 +1,15 @@
-import express, {Request,Response} from 'express'
-
-let app = express()
+import express, { Application } from 'express'
+import dotenv from 'dotenv'
+import userRouter from './modules/user/user.routes'
+dotenv.config()
+let app : Application = express()
+app.use(express.json())
+let PORT = process.env.PORT || 3000
 
 app.use(express.json())
 
-app.get('/',(req : Request,res : Response) => {
-  res.send("Hello")
-})
+app.use('/api/auth',userRouter)
 
-app.listen(3000,() => {
+app.listen(PORT,() => {
   console.log('running 3000')
 })
