@@ -1,6 +1,6 @@
 
 import prisma from "../../config/config.db";
-import { CreateUserDTO } from "./user.types";
+import { CreateUserDTO } from "./todo.types";
 
   
 

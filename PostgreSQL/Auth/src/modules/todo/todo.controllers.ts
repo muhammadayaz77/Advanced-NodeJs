@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import { Request, Response } from "express";
-import userService from "./user.service";
+import userService from "./todo.service";
 import bcrypt from "bcrypt";
 
 // Token expiry times

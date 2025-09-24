@@ -1,5 +1,5 @@
 import express from "express";
-import {AuthUser,login, logout, refresh, register } from "./user.controllers";
+import {AuthUser,login, logout, refresh, register } from "./todo.controllers";
 import {authenticateToken} from '../../middlewares/auth.middleware'
 
 let router = express.Router()
