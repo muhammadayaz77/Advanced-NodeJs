@@ -1,164 +1,112 @@
-import jwt from "jsonwebtoken";
+import { User } from './../../../../PrismaYT/generated/prisma/index.d';
 import { Request, Response } from "express";
-import userService from "./todo.service";
-import bcrypt from "bcrypt";
+import todoService from "./todo.service";
 
-// Token expiry times
-const ACCESS_TOKEN_EXPIRY = "15m"; // short-lived
-const REFRESH_TOKEN_EXPIRY = "7d"; // long-lived
-
-// Helpers to generate tokens
-const generateAccessToken = (userId: number) => {
-  return jwt.sign({ id: userId }, process.env.JWT_SECRET as string, {
-    expiresIn: ACCESS_TOKEN_EXPIRY,
-  });
-};
-
-const generateRefreshToken = (userId: number) => {
-  return jwt.sign({ id: userId }, process.env.JWT_REFRESH_SECRET as string, {
-    expiresIn: REFRESH_TOKEN_EXPIRY,
-  });
-};
-
-// ============================ REGISTER ============================
-export const register = async (req: Request, res: Response) => {
+// ============================ CREATE ============================
+export const create = async (req: Request, res: Response) => {
   try {
-    const { name, email, password } = req.body;
+    // console.log(req.)
+    const { desc} = req.body;
+    let {userId} = (req as any);
 
-    const findUser = await userService.readOnlyUser(email);
-    if (findUser) {
+    const user = await todoService.findUniqueUser(userId)
+    console.log('user',user)
+    if(!user)
       return res.status(400).json({
-        message: "User Already Exist",
+        message: "User not found",
         success: false,
       });
-    }
+ 
+    const savedData = await todoService.createTodo(desc,userId);
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = await userService.createUser({ name, email, hashedPassword });
-
-    const accessToken = generateAccessToken(newUser.id);
-    const refreshToken = generateRefreshToken(newUser.id);
-
-    // store BOTH tokens in cookies
-    res.cookie("accessToken", accessToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-      maxAge: 15 * 60 * 1000, // 15 mins
-    });
-    res.cookie("refreshToken", refreshToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-    });
-
-    return res.status(201).json({
-      message: "User registered successfully",
+    return res.status(200).json({
+      data : savedData,
+      message: "Todo Added",
       success: true,
     });
   } catch (err: any) {
     return res.status(500).json({ message: err.message, success: false });
   }
 };
-
-// ============================ LOGIN ============================
-export const login = async (req: Request, res: Response) => {
+// ============================ READ ============================
+export const readAllTodos = async (req: Request, res: Response) => {
   try {
-    const { email, password } = req.body;
-
-    const findUser = await userService.readOnlyUser(email);
-    if (!findUser) {
-      return res.status(400).json({ message: "User not found", success: false });
-    }
-
-    const isMatch = await bcrypt.compare(password, findUser.password);
-    if (!isMatch) {
-      return res.status(401).json({ message: "Invalid Credentials", success: false });
-    }
-
-    const accessToken = generateAccessToken(findUser.id);
-    const refreshToken = generateRefreshToken(findUser.id);
-
-    // store BOTH tokens in cookies
-    res.cookie("accessToken", accessToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-      maxAge: 15 * 60 * 1000,
-    });
-    res.cookie("refreshToken", refreshToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-    });
-
-    return res.status(200).json({ message: "User login successful", success: true });
-  } catch (err: any) {
-    return res.status(500).json({ message: err.message, success: false });
-  }
-};
-
-// ============================ REFRESH TOKEN ============================
-export const refresh = async (req: Request, res: Response) => {
-  try {
-    const token = req.cookies.refreshToken;
-    if (!token) return res.status(401).json({ message: "No refresh token provided" });
-
-    jwt.verify(token, process.env.JWT_REFRESH_SECRET as string, (err: any, decoded: any) => {
-      if (err) return res.status(403).json({ message: "Invalid refresh token" });
-
-      const newAccessToken = generateAccessToken(decoded.id);
-
-      // set new access token cookie
-      res.cookie("accessToken", newAccessToken, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "strict",
-        maxAge: 15 * 60 * 1000,
-      });
-
-      return res.json({ message: "Access token refreshed", success: true });
-    });
-  } catch (err: any) {
-    return res.status(500).json({ message: err.message, success: false });
-  }
-};
-
-// ============================ LOGOUT ============================
-export const logout = async (req: Request, res: Response) => {
-  try {
-    res.clearCookie("accessToken", {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-    });
-    res.clearCookie("refreshToken", {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-    });
-
-    return res.json({ message: "Logged out successfully", success: true });
-  } catch (err: any) {
-    return res.status(500).json({ message: err.message, success: false });
-  }
-};
-
-
-export const AuthUser = async (req:Request,res:Response) => {
-  try{
-    const allUser = await userService.readAllUser();
+    const {userId} = (req as any);
+    const allTodos = await todoService.readAllTodos(userId)
     return res.status(200).json({
-      data : allUser,
-      success : true
-    })
+      data : allTodos,
+      success: true,
+    });
+
+  } catch (err: any) {
+    return res.status(500).json({ message: err.message, success: false });
   }
-  catch(err : any){
-    return res.status(500).json({
-      message : err.message,
-      success : false
-    })
-  }
-}
+};
+
+      // ============================ DELETE ============================
+      export const deleteTodo = async (req: Request, res: Response) => {
+        try {
+          // console.log(req.)
+          const todoId = Number(req.params.id);
+          let {userId} = (req as any);
+          if (isNaN(todoId)) {
+            return res.status(400).json({ message: "Invalid todo id" });
+          }
+          const todo = await todoService.findUniqueUser(todoId)
+          if(!todo)
+            return res.status(404).json({
+              message: "Todo not found",
+              success: false,
+            });
+      
+          const deletedTodo = await todoService.deleteTodo(todoId,userId)
+          if(!deleteTodo)
+            return res.status(400).json({
+              message: "Todo with current user is not found",
+              success: false,
+            });
+      
+          return res.status(200).json({
+            deletedTodo,
+            message: "Todo Deleted",
+            success: true,
+          });
+        } catch (err: any) {
+          return res.status(500).json({ message: err.message, success: false });
+        }
+      };
+      // ============================ UPDATE ============================
+      export const updateTodo = async (req: Request, res: Response) => {
+        try {
+          // console.log(req.)
+          const {description} = req.body;
+          const todoId = Number(req.params.id);
+          let {userId} = (req as any);
+          if (isNaN(todoId)) {
+            return res.status(400).json({ message: "Invalid todo id" });
+          }
+          const todo = await todoService.findUniqueUser(todoId);
+          if(!todo || !description)
+          {
+            return res.status(404).json({
+              message: `Something not found`,
+              success: false,
+            });
+          }
+      
+          const updateTodo = await todoService.updateTodo(todoId,description,userId)
+          if(!updateTodo)
+            return res.status(400).json({
+              message: "Todo with current user is not found",
+              success: false,
+            });
+      
+          return res.status(200).json({
+            updateTodo,
+            message: "Todo Update Successfully",
+            success: true,
+          });
+        } catch (err: any) {
+          return res.status(500).json({ message: err.message, success: false });
+        }
+      };

@@ -1,33 +1,53 @@
-
 import prisma from "../../config/config.db";
 import { CreateUserDTO } from "./todo.types";
 
-  
-
-
 
 class userService {
-  static async readOnlyUser(email : string){
-    let findUser = await prisma.user.findUnique({
+  static async findUniqueUser(id : number){
+    let findTodo = await prisma.todo.findUnique({
       where : {
-        email,
+        id,
       }
     })
-    return findUser;
+    return findTodo;
   }
-  static async createUser(datas:CreateUserDTO){
-    const newUser = await prisma.user.create({
+  static async createTodo(desc : string,userId : number){
+    const todo = await prisma.todo.create({
+      data: {
+        description : desc,
+        user: { connect: { id: Number(userId) } }, // connect todo with user
+      },
+    });
+    return todo
+  }
+  static async readAllTodos(userId:number){
+    let AllTodos = await prisma.todo.findMany({
+      where : {
+        userId
+      }
+    })
+    return AllTodos;
+  }
+  static async deleteTodo(todoId:number,userId : number){
+    let AllTodos = await prisma.todo.delete({
+      where : {
+        id : todoId,
+        userId
+      }
+    })
+    return AllTodos;
+  }
+  static async updateTodo(todoId:number,description : string,userId : number){
+    let UpdatedTodo = await prisma.todo.update({
+      where : {
+        id : todoId,
+        userId
+      },
       data : {
-        name : datas.name,
-        email : datas.email,
-        password : datas.hashedPassword
+        description
       }
     })
-    return newUser
-  }
-  static async readAllUser(){
-    let AllUser = await prisma.user.findMany()
-    return AllUser;
+    return UpdatedTodo;
   }
 }
 

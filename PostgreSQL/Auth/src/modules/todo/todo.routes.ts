@@ -1,14 +1,12 @@
 import express from "express";
-import {AuthUser,login, logout, refresh, register } from "./todo.controllers";
+import {create, deleteTodo, readAllTodos, updateTodo } from "./todo.controllers";
 import {authenticateToken} from '../../middlewares/auth.middleware'
 
 let router = express.Router()
 
-// router.get('/all-user',getAllUser)
-router.post('/register',register)
-router.post('/login',login)
-router.post('/refresh',refresh)
-router.get('/logout',authenticateToken,logout)
-router.get('/all-user',authenticateToken,AuthUser)
+router.post('/create',authenticateToken,create)
+router.get('/read',authenticateToken,readAllTodos)
+router.delete('/delete/:id',authenticateToken,deleteTodo)
+router.put('/update/:id',authenticateToken,updateTodo)
 
-export default router
+export default router;

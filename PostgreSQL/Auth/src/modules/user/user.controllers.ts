@@ -149,6 +149,7 @@ export const logout = async (req: Request, res: Response) => {
 
 export const AuthUser = async (req:Request,res:Response) => {
   try{
+    console.log('auth : ',(req as any).userId)
     const allUser = await userService.readAllUser();
     return res.status(200).json({
       data : allUser,
