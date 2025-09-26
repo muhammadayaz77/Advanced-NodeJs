@@ -4,6 +4,14 @@ import { CreateUserDTO } from "./todo.types";
 
 class userService {
   static async findUniqueUser(id : number){
+    let findTodo = await prisma.user.findUnique({
+      where : {
+        id,
+      }
+    })
+    return findTodo;
+  }
+  static async findUniqueTodo(id : number){
     let findTodo = await prisma.todo.findUnique({
       where : {
         id,
@@ -37,18 +45,24 @@ class userService {
     })
     return AllTodos;
   }
-  static async updateTodo(todoId:number,description : string,userId : number){
-    let UpdatedTodo = await prisma.todo.update({
-      where : {
-        id : todoId,
-        userId
+  static async updateTodo(todoId: number, description: string, userId: number) {
+    const result = await prisma.todo.updateMany({
+      where: {
+        id: todoId,
+        userId: userId,
       },
-      data : {
-        description
-      }
-    })
-    return UpdatedTodo;
+      data: {
+        description,
+      },
+    });
+  
+    if (result.count === 0) {
+      throw new Error("Todo not found or you don’t have permission to update it.");
+    }
+  
+    return result;
   }
+  
 }
 
 export default userService

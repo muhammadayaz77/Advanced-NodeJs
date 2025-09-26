@@ -6,11 +6,11 @@ import todoService from "./todo.service";
 export const create = async (req: Request, res: Response) => {
   try {
     // console.log(req.)
-    const { desc} = req.body;
+    const {desc} = req.body;
     let {userId} = (req as any);
-
+    console.log('user : ',userId);
+    console.log()
     const user = await todoService.findUniqueUser(userId)
-    console.log('user',user)
     if(!user)
       return res.status(400).json({
         message: "User not found",
@@ -52,7 +52,7 @@ export const readAllTodos = async (req: Request, res: Response) => {
           if (isNaN(todoId)) {
             return res.status(400).json({ message: "Invalid todo id" });
           }
-          const todo = await todoService.findUniqueUser(todoId)
+          const todo = await todoService.findUniqueTodo(todoId)
           if(!todo)
             return res.status(404).json({
               message: "Todo not found",
@@ -85,7 +85,8 @@ export const readAllTodos = async (req: Request, res: Response) => {
           if (isNaN(todoId)) {
             return res.status(400).json({ message: "Invalid todo id" });
           }
-          const todo = await todoService.findUniqueUser(todoId);
+          const todo = await todoService.findUniqueTodo(todoId);
+          console.log(description,userId,todo)
           if(!todo || !description)
           {
             return res.status(404).json({
