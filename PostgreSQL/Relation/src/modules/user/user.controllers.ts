@@ -173,21 +173,20 @@ export const createUserWithProfile = async (req: Request, res: Response) => {
     const { name, email, bio, age } = req.body;
 
     const user = await prisma.user.create({
-      data: {
+      data : {
         name,
         email,
-        profile: {
-          create: {
+        profile : {
+          create : {
             bio,
-            age,
-          },
+            age
+          }
         },
       },
-      include: {
-        profile: true, // 👈 return profile also
-      },
-    });
-
+      include : {
+        profile : true
+      }
+    })
     res.status(201).json(user);
   } catch (error: any) {
     res.status(400).json({ error: error.message });
@@ -197,8 +196,8 @@ export const createUserWithProfile = async (req: Request, res: Response) => {
 // controllers/user.controller.ts
 export const getUsersWithProfile = async (req: Request, res: Response) => {
   try {
-    const users = await prisma.user.findMany({
-      include: { profile: true }, // fetch profile along with user
+    const users = await prisma.profile.findMany({
+      include: { user: true }, // fetch profile along with user
     });
 
     res.status(200).json(users);
@@ -206,3 +205,6 @@ export const getUsersWithProfile = async (req: Request, res: Response) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+
+
