@@ -193,6 +193,18 @@ export const createUserWithProfile = async (req: Request, res: Response) => {
   }
 };
 
+// controllers/user.controller.ts
+export const getUsersWithProfile = async (req: Request, res: Response) => {
+  try {
+    const users = await prisma.profile.findMany({
+      include: { user: true }, // fetch profile along with user
+    });
+
+    res.status(200).json(users);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+};
 
 
 
