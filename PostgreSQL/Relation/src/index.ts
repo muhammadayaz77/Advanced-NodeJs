@@ -12,7 +12,7 @@ let PORT = process.env.PORT || 3000
 app.use(express.json())
 
 app.use('/api/auth',userRouter)
-app.use('/api/todo',todoRouter)
+// app.use('/api/todo',todoRouter)
 
 app.listen(PORT,() => {
   console.log('running 3000')
